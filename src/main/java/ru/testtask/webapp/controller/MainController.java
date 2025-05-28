@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.testtask.webapp.config.AppProperties;
+import ru.testtask.webapp.service.InitDataValidatorService;
 
 @Slf4j
 @Controller
@@ -14,6 +15,7 @@ import ru.testtask.webapp.config.AppProperties;
 public class MainController {
 
     private final AppProperties appProperties;
+    private final InitDataValidatorService initDataValidatorService;
 
     @GetMapping
     public String index(Model model) {
@@ -25,7 +27,11 @@ public class MainController {
     @GetMapping("/auth")
     public String home(@RequestParam(name = "initData") String initData, Model model) {
         log.info("Auth request with initData: {}", initData);
-        model.addAttribute("init_data", initData);
+        if (initDataValidatorService.validate(initData)) {
+            model.addAttribute("init_data", initData);
+        } else {
+            model.addAttribute("init_data", "auth failed");
+        }
         return "userinfo";
     }
 
