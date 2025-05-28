@@ -5,9 +5,13 @@
     <title>UserInfo</title>
 </head>
 <body>
-<h1>initData:</h1>
-<p>
-    <span th:text="${init_data} ?: 'Не указана'"></span>
-</p>
+<h1>Ваши данные:</h1>
+<div th:if="${user}">
+    <p>Telegram id: <span th:text="${user.telegramId}"></span></p>
+    <p>Имя: <span th:text="${user.firstName}"></span></p>
+    <p>Фамилия: <span th:text="${user.lastName} ?: 'Не указана'"></span></p>
+    <p>Имя пользователя: <span th:text="${user.username} ?: 'Не указан'"></span></p>
+    <p>Язык: <span th:text="${user.languageCode} ?: 'Не указан'"></span></p>
+</div>
 </body>
 </html>

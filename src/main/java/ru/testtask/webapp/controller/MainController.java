@@ -34,6 +34,7 @@ public class MainController {
             model.addAttribute("init_data", initData);
             User user = userService.register(initData);
             log.info("Saved user: {}", user);
+            model.addAttribute("user", user);
         } else {
             model.addAttribute("init_data", "auth failed");
         }
