@@ -1,11 +1,14 @@
 package ru.testtask.webapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.testtask.webapp.config.AppProperties;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MainController {
@@ -18,4 +21,13 @@ public class MainController {
         model.addAttribute("bot_token", appProperties.getBotToken());
         return "index";
     }
+
+    @GetMapping("/auth")
+    public String home(@RequestParam(name = "initData") String initData, Model model) {
+        log.info("Auth request with initData: {}", initData);
+        model.addAttribute("init_data", initData);
+        return "userinfo";
+    }
+
+
 }
