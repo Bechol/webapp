@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - property:
+      name: prefix
+      value: tst
+  - property:
+      name: schema
+      value: tst
+  - include:
+      file: db/changelog/v1.0/changelog-v1.0-cumulative.yml
+      relativeToChangelogFile: true
