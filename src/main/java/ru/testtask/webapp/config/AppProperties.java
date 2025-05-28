@@ -9,4 +9,5 @@ public class AppProperties {
 
     private String botToken;
     private String cryptoKey;
+    private Long hashLiveTime;
 }

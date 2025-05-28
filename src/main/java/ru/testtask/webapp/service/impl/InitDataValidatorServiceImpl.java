@@ -27,6 +27,7 @@ public class InitDataValidatorServiceImpl implements InitDataValidatorService, I
 
     private String botToken;
     private String cryptoKey;
+    private Long hashLiveTime;
 
     @Override
     public boolean validate(String initData) {
@@ -36,10 +37,21 @@ public class InitDataValidatorServiceImpl implements InitDataValidatorService, I
         try {
             Map<String, String> initDataFieldsMap = mapInitData(initData);
             String dataCheckString = buildCheckString(initDataFieldsMap);
-            return verifyHash(dataCheckString, initDataFieldsMap.get("hash"));
+            return verifyHash(dataCheckString, initDataFieldsMap.get("hash")) && validateAuthDate(initDataFieldsMap.get("auth_date"));
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to validate init data: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.botToken = Optional.ofNullable(appProperties).map(AppProperties::getBotToken)
+                .orElseThrow(() -> new IllegalStateException("Bot token is not defined"));
+        this.cryptoKey = Optional.ofNullable(appProperties.getCryptoKey())
+                .orElseGet(() -> DEFAULT_CRYPTO_KEY);
+        this.hashLiveTime = appProperties.getHashLiveTime();
+        log.info("App properties successfully read and set. Crypto key is [{}]. Hash live time {} ms",
+                this.cryptoKey, this.hashLiveTime);
     }
 
     private String buildCheckString(Map<String, String> fieldValuesMap) {
@@ -82,12 +94,14 @@ public class InitDataValidatorServiceImpl implements InitDataValidatorService, I
                 ));
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.botToken = Optional.ofNullable(appProperties).map(AppProperties::getBotToken)
-                .orElseThrow(() -> new IllegalStateException("Bot token is not defined"));
-        this.cryptoKey = Optional.ofNullable(appProperties.getCryptoKey())
-                .orElseGet(() -> DEFAULT_CRYPTO_KEY);
-        log.info("App properties successfully read and set. Crypto key is [{}]", this.cryptoKey);
+    private boolean validateAuthDate(String authDateString) {
+        long authDateFieldValue = Long.parseLong(authDateString);
+        if (authDateFieldValue <= 0) {
+            throw new IllegalArgumentException("authDateFieldValue incorrect");
+        }
+        long currentTime = System.currentTimeMillis();
+        log.info("currentTime:{} authTime:{}", currentTime, authDateFieldValue);
+        long timeSubtraction = currentTime - (authDateFieldValue * 1000);
+        return hashLiveTime > timeSubtraction;
     }
 }

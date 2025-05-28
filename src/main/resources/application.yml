@@ -26,3 +26,4 @@ spring:
 app:
   botToken: ${BOT_TOKEN}
   cryptoKey: ${CRYPTO_KEY}
+  hashLiveTime: ${HASH_LIVE_TIME_MILLIS:10000}
