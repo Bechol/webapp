@@ -1,12 +1,73 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test task. Telegram auth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Auth</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<h1>App properties:</h1>
-<p>BOT_TOKEN: <span th:text="${bot_token}"></span></p>
-<p>CRYPTO_KEY: <span th:text="${crypto_key}"></span></p>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body text-center p-4">
+                    <h1 class="h3 mb-4">Тестовое задание</h1>
+                    <h1 class="h5 mb-4">Базовая аутентификация для Telegram WebApp</h1>
+                    <button id="authButton" class="btn btn-primary btn-lg w-100 mb-3">
+                        Sign in
+                    </button>
+                    <div id="spinner" class="spinner-border text-primary d-none" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div id="error" class="text-danger mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    const authButton = document.getElementById('authButton');
+    const spinner = document.getElementById('spinner');
+    const errorDiv = document.getElementById('error');
+
+    // Инициализация WebApp
+    tg.expand();
+    tg.enableClosingConfirmation();
+
+    authButton.addEventListener('click', () => {
+      // Показываем спиннер загрузки Bootstrap
+      authButton.classList.add('d-none');
+      spinner.classList.remove('d-none');
+      errorDiv.textContent = '';
+
+      // Получаем initData от Telegram
+      const initData = tg.initData || tg.initDataUnsafe;
+
+      if (!initData) {
+        showError('Init data not available. Please open this page through Telegram.');
+        return;
+      }
+
+      // Формируем URL с GET-параметром
+      const url = `https://testtask.up.railway.app/auth?initData=${encodeURIComponent(initData)}`;
+
+      // Перенаправляем пользователя на сервер с initData
+      window.location.href = url;
+    });
+
+    function showError(message) {
+      spinner.classList.add('d-none');
+      authButton.classList.remove('d-none');
+      errorDiv.textContent = message;
+    }
+</script>
 </body>
 </html>
