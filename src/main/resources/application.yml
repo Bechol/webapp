@@ -4,6 +4,17 @@ server:
 spring:
   application:
     name: test-task-webapp
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    show-sql: false
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${DATASOURCE_HOST}/${DATASOURCE_DB}?currentSchema=tst
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
 
 app:
   botToken: ${BOT_TOKEN}
