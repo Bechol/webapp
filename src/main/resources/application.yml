@@ -1,0 +1,10 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: test-task-webapp
+
+app:
+  botToken: ${BOT_TOKEN}
+  cryptoKey: ${CRYPTO_KEY}
