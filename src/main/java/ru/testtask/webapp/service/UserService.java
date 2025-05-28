@@ -1,6 +1,8 @@
 package ru.testtask.webapp.service;
 
+import ru.testtask.webapp.domain.User;
+
 public interface UserService {
 
-    void register(String initData);
+    User register(String initData);
 }

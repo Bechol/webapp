@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -28,8 +27,9 @@ public class UserServiceImpl implements UserService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void register(String initData) {
-        userRepository.save(
+    @Transactional
+    public User register(String initData) {
+        return userRepository.save(
                 mapFromInitDataFieldValues(
                         mapInitData(initData)
                 )
